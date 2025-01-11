@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "n5.Challenge.Domain", "n5.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "n5.Challenge.Application", "n5.Challenge.Application\n5.Challenge.Application.csproj", "{490CB7C4-09F9-4F74-A28D-721FF4FEE494}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "n5.Challenge.Infraestructure", "n5.Challenge.Infraestructure\n5.Challenge.Infraestructure.csproj", "{6C9E9B28-4C38-4661-8BFF-457C577A761B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "n5.Challenge.Infrastructure", "n5.Challenge.Infraestructure\n5.Challenge.Infrastructure.csproj", "{6C9E9B28-4C38-4661-8BFF-457C577A761B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
