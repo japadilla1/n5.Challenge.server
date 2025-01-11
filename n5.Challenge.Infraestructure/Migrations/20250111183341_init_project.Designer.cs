@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using n5.Challenge.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using n5.Challenge.Infrastructure.Context;
 namespace n5.Challenge.Infrastructure.Migrations
 {
     [DbContext(typeof(PermissionDbContext))]
-    partial class PermissionsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250111183341_init_project")]
+    partial class init_project
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,6 +69,23 @@ namespace n5.Challenge.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PermissionType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "SuperAdmin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Admin"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Supervisor"
+                        });
                 });
 
             modelBuilder.Entity("n5.Challenge.Domain.Entities.Permission", b =>

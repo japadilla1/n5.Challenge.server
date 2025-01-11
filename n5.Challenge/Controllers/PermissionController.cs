@@ -8,27 +8,46 @@ namespace n5.Challenge.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PermissionController(IMediator mediator) : ControllerBase
+    public class PermissionController(IMediator mediator, ILogger<PermissionController> logger) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
+        private readonly ILogger<PermissionController> _logger = logger;
 
         [HttpGet]
         [Route("permission/get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var query = new GetAllPermissionQuery();
+            try
+            {
+                var query = new GetAllPermissionQuery();
 
-            var response = await _mediator.Send(query);
+                var response = await _mediator.Send(query);
 
-            return Ok(response);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.StackTrace}");
+                return StatusCode(500, "Ocurrió un problema al procesar la petición");
+            }
         }
 
         [HttpPost]
         [Route("permission/add")]
         public async Task<IActionResult> AddPermission(AddPermissionCommand input)
         {
-            var response = await _mediator.Send(input);
-            return Ok(response);
+            try
+            {
+
+                var response = await _mediator.Send(input);
+                return Ok(response);
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.StackTrace}");
+                return StatusCode(500, "Ocurrió un problema al procesar la petición");
+            }
         }
 
 
@@ -36,8 +55,18 @@ namespace n5.Challenge.Api.Controllers
         [Route("permission/update")]
         public async Task<IActionResult> UpdatePermission(UpdatePermissionCommand input)
         {
-            var response = await _mediator.Send(input);
-            return Ok(response);
+            try
+            {
+
+                var response = await _mediator.Send(input);
+                return Ok(response);
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.StackTrace}");
+                return StatusCode(500, "Ocurrió un problema al procesar la petición");
+            }
         }
     }
 }

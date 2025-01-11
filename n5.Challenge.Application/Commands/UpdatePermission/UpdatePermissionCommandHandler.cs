@@ -1,38 +1,22 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using n5.Challenge.Application.Dto;
-using n5.Challenge.Application.Repositories;
+using n5.Challenge.Application.UnitOfWork;
 using n5.Challenge.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace n5.Challenge.Application.Commands.UpdatePermission
 {
-    public class UpdatePermissionCommandHandler(IPermissionRepository permissionsRepository) : IRequestHandler<UpdatePermissionCommand, PermissionDto>
+    public class UpdatePermissionCommandHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<UpdatePermissionCommand, PermissionDto>
     {
-        private readonly IPermissionRepository _permissionsRepository = permissionsRepository;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<PermissionDto> Handle(UpdatePermissionCommand request, CancellationToken cancellationToken)
         {
-            var permission = new Permission()
-            {
-                Id = request.Id,
-                EmployeeName = request.EmployeeName,
-                EmployeeSurname = request.EmployeeSurname,
-                PermissionDate = request.PermissionDate,
-                PermissionTypeId = request.PermissionTypeId,
-            };
-            var response = await _permissionsRepository.ModifyAsync(permission);
-            var permissionResponse = new PermissionDto()
-            {
-                Id = response.Id,
-                EmployeeName = response.EmployeeName,
-                EmployeeSurname = response.EmployeeSurname,
-                PermissionDate = response.PermissionDate,
-                PermissionTypeId = response.PermissionTypeId,
-            };
+            var permission = _mapper.Map<Permission>(request);
+            var response = await _unitOfWork.PermissionRepository.ModifyAsync(permission);
+            await _unitOfWork.CompleteAsync();
+            var permissionResponse = _mapper.Map<PermissionDto>(response);
             return permissionResponse;
         }
     }

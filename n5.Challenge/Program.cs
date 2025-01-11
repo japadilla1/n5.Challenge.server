@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using n5.Challenge.Application.Repositories;
+using n5.Challenge.Application.UnitOfWork;
 using n5.Challenge.Infrastructure.Context;
 using n5.Challenge.Infrastructure.Repositories;
+using n5.Challenge.Infrastructure.UnitOfWork;
+using Nest;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<PermissionDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+var endPoint = builder.Configuration.GetValue<string>("ElasticSearch:EndPoint");
+var index = builder.Configuration.GetValue<string>("ElasticSearch:Index");
+var connectionString = new ConnectionSettings(new Uri(endPoint)).BasicAuthentication("elastic","elastic").DefaultIndex(index);
+var elastic = new ElasticClient(connectionString);
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddSingleton<IElasticClient>(elastic);
 // Add services to the container.
 builder.Services.AddTransient<IPermissionRepository, PermissionRepository>();
 builder.Services.AddTransient<IPermissionTypeRepository, PermissionTypeRepository>();
@@ -22,6 +33,9 @@ builder.Services.AddMediatR(options =>
 {
     options.RegisterServicesFromAssembly(Assembly.Load("n5.Challenge.Application"));
 });
+
+builder.Services.AddAutoMapper(Assembly.Load("n5.Challenge.Infrastructure"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -36,5 +50,12 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using(var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<PermissionDbContext>();
+    context.Database.Migrate();
+};
 
 app.Run();

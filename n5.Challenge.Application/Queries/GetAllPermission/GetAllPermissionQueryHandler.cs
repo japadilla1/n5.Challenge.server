@@ -1,25 +1,21 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using n5.Challenge.Application.Dto;
-using n5.Challenge.Application.Repositories;
+using n5.Challenge.Application.UnitOfWork;
 
 namespace n5.Challenge.Application.Queries.GetAllPermission
 {
-    public class GetAllPermissionQueryHandler(IPermissionRepository permissionsRepository) : IRequestHandler<GetAllPermissionQuery, IReadOnlyList<PermissionDto>>
+    public class GetAllPermissionQueryHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetAllPermissionQuery, IReadOnlyList<PermissionDto>>
     {
-        private readonly IPermissionRepository _permissionsRepository = permissionsRepository;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<IReadOnlyList<PermissionDto>> Handle(GetAllPermissionQuery request, CancellationToken cancellationToken)
         {
-            var response = await _permissionsRepository.GetAllAsync();
-            var data = response.Select(p => new PermissionDto
-            {
-                Id = p.Id,
-                EmployeeName = p.EmployeeName,
-                EmployeeSurname = p.EmployeeSurname,
-                PermissionDate = p.PermissionDate,
-                PermissionTypeId = p.PermissionTypeId,
-            }).ToList();
-            return data;
+            var response = await _unitOfWork.PermissionRepository.GetAllAsync();
+            var responseMap = _mapper.Map<IReadOnlyList<PermissionDto>>(response);
+           
+            return responseMap;
         }
     }
 

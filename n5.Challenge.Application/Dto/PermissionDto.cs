@@ -17,6 +17,9 @@ namespace n5.Challenge.Application.Dto
         public int PermissionTypeId { get; set; }
 
         [Required]
+        public required string Description { get; set; }
+
+        [Required]
         public DateTime PermissionDate { get; set; }
     }
 }
