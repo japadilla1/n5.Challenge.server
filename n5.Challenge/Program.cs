@@ -36,6 +36,15 @@ builder.Services.AddMediatR(options =>
 
 builder.Services.AddAutoMapper(Assembly.Load("n5.Challenge.Infrastructure"));
 
+// Configurar CORS para permitir solicitudes desde cualquier origen (ajustar según tus necesidades)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", builder =>
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,6 +53,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Activar CORS
+app.UseCors("AllowAllOrigins");
 
 app.UseHttpsRedirection();
 

@@ -24,6 +24,10 @@ namespace n5.Challenge.Infrastructure.Repositories
 
         public async Task<Permission> ModifyAsync(Permission input)
         {
+            if(input.Id == 0)
+            {
+                throw new ArgumentException("El campo Id es obligatorio");
+            }
             _context.Permission.Update(input);
             await Task.CompletedTask;
             return input;
